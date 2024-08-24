@@ -12,6 +12,7 @@ import com.cisco.accounts.service.AccountsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
 
@@ -27,8 +28,11 @@ public class AccountsServiceImpl implements AccountsService {
         Customer customer = CustomerMapper.mapToCustomer(customerDTO, new Customer());
         Optional<Customer> optionalCustomer = customerRepository.findByMobileNumber(customerDTO.getMobileNumber());
         if (optionalCustomer.isPresent()) {
-            throw new CustomerAlreadyExistsException("customer already registered with the given mobile number "+ customerDTO.getMobileNumber());
+            throw new CustomerAlreadyExistsException("customer already registered with the given mobile number: "
+                    + customerDTO.getMobileNumber());
         }
+        customer.setCreatedAt(LocalDateTime.now());
+        customer.setCreatedBy("-");
         Customer savedCustomer = customerRepository.save(customer);
         accountsRepository.save(createNewAccount(savedCustomer));
     }
@@ -41,6 +45,8 @@ public class AccountsServiceImpl implements AccountsService {
         newAccount.setAccountNumber(randomAccNumber);
         newAccount.setAccountType(AccountsConstants.SAVINGS);
         newAccount.setBranchAddress(AccountsConstants.ADDRESS);
+        newAccount.setCreatedAt(LocalDateTime.now());
+        newAccount.setCreatedBy("-");
         return newAccount;
     }
 
