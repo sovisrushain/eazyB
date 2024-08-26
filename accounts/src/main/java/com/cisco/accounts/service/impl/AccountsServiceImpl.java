@@ -1,10 +1,13 @@
 package com.cisco.accounts.service.impl;
 
 import com.cisco.accounts.constants.AccountsConstants;
+import com.cisco.accounts.dto.AccountsDTO;
 import com.cisco.accounts.dto.CustomerDTO;
 import com.cisco.accounts.entity.Accounts;
 import com.cisco.accounts.entity.Customer;
 import com.cisco.accounts.exception.CustomerAlreadyExistsException;
+import com.cisco.accounts.exception.ResourceNotFoundException;
+import com.cisco.accounts.mapper.AccountsMapper;
 import com.cisco.accounts.mapper.CustomerMapper;
 import com.cisco.accounts.repository.AccountsRepository;
 import com.cisco.accounts.repository.CustomerRepository;
@@ -35,6 +38,20 @@ public class AccountsServiceImpl implements AccountsService {
         customer.setCreatedBy("-");
         Customer savedCustomer = customerRepository.save(customer);
         accountsRepository.save(createNewAccount(savedCustomer));
+    }
+
+    @Override
+    public CustomerDTO fetchAccount(String mobileNumber) {
+        Customer customer = customerRepository.findByMobileNumber(mobileNumber).orElseThrow(
+                () -> new ResourceNotFoundException("customer", "mobileNumber", mobileNumber)
+        );
+        Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId()).orElseThrow(
+                () -> new ResourceNotFoundException("accounts", "customer", customer.getCustomerId().toString())
+        );
+
+        CustomerDTO customerDTO = CustomerMapper.mapToCustomerDto(customer, new CustomerDTO());
+        customerDTO.setAccounts(AccountsMapper.mapToAccountsDto(accounts, new AccountsDTO()));
+        return customerDTO;
     }
 
     private Accounts createNewAccount(Customer customer) {
