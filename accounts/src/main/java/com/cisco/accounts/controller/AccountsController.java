@@ -4,6 +4,7 @@ import com.cisco.accounts.constants.AccountsConstants;
 import com.cisco.accounts.dto.CustomerDTO;
 import com.cisco.accounts.dto.ResponseDTO;
 import com.cisco.accounts.service.AccountsService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,6 +30,20 @@ public class AccountsController {
     public ResponseEntity<CustomerDTO> fetchAccountDetails(@RequestParam String mobileNumber) {
         CustomerDTO customerDTO = accountsService.fetchAccount(mobileNumber);
         return ResponseEntity.status(HttpStatus.OK).body(customerDTO);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<ResponseDTO> updateAccountDetails(@Valid @RequestBody CustomerDTO customerDTO) {
+        boolean isUpdated = accountsService.updateAccount(customerDTO);
+        if(isUpdated) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDTO(AccountsConstants.STATUS_200, AccountsConstants.MESSAGE_200));
+        }else{
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(new ResponseDTO(AccountsConstants.STATUS_417, AccountsConstants.MESSAGE_417_UPDATE));
+        }
     }
 
 }
