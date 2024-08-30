@@ -10,17 +10,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 @RequestMapping(path = "/api/v1/accounts", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AccountsController {
 
     private final AccountsService accountsService;
 
     @PostMapping("/create")
-    public ResponseEntity<ResponseDTO> createAccount(@RequestBody CustomerDTO customerDTO) {
+    public ResponseEntity<ResponseDTO> createAccount(@Valid @RequestBody CustomerDTO customerDTO) {
         accountsService.createAccount(customerDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO(
                 AccountsConstants.STATUS_201, AccountsConstants.MESSAGE_201
@@ -28,7 +30,9 @@ public class AccountsController {
     }
 
     @GetMapping("/fetch")
-    public ResponseEntity<CustomerDTO> fetchAccountDetails(@RequestParam String mobileNumber) {
+    public ResponseEntity<CustomerDTO> fetchAccountDetails(@RequestParam
+                                                               @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
+                                                               String mobileNumber) {
         CustomerDTO customerDTO = accountsService.fetchAccount(mobileNumber);
         return ResponseEntity.status(HttpStatus.OK).body(customerDTO);
     }
