@@ -1,5 +1,6 @@
 package com.cisco.accounts.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
@@ -9,6 +10,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(name = "Customer")
 public class CustomerDTO {
     @NotEmpty(message = "Name can not be null or empty")
     @Size(min = 5, max = 30, message = "The length of the customer name should be between 5 and 30")

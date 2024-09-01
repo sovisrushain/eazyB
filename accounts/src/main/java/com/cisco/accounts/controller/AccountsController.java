@@ -2,9 +2,12 @@ package com.cisco.accounts.controller;
 
 import com.cisco.accounts.constants.AccountsConstants;
 import com.cisco.accounts.dto.CustomerDTO;
+import com.cisco.accounts.dto.ErrorResponseDTO;
 import com.cisco.accounts.dto.ResponseDTO;
 import com.cisco.accounts.service.AccountsService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -49,7 +52,8 @@ public class AccountsController {
     @Operation(summary = "REST API: Update Account details")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "HTTP Status OK"),
-            @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error")
+            @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error",
+            content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class)))
     })
     @PutMapping("/update")
     public ResponseEntity<ResponseDTO> updateAccountDetails(@Valid @RequestBody CustomerDTO customerDTO) {
@@ -68,7 +72,8 @@ public class AccountsController {
     @Operation(summary = "REST API: Delete Account")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "HTTP Status OK"),
-            @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error")
+            @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class)))
     })
     @DeleteMapping("/delete")
     public ResponseEntity<ResponseDTO> deleteAccountDetails(@RequestParam
