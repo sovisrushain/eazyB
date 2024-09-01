@@ -15,7 +15,6 @@ import com.cisco.accounts.service.AccountsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
 
@@ -34,8 +33,6 @@ public class AccountsServiceImpl implements AccountsService {
             throw new CustomerAlreadyExistsException("customer already registered with the given mobile number: "
                     + customerDTO.getMobileNumber());
         }
-        customer.setCreatedAt(LocalDateTime.now());
-        customer.setCreatedBy("-");
         Customer savedCustomer = customerRepository.save(customer);
         accountsRepository.save(createNewAccount(savedCustomer));
     }
@@ -58,7 +55,7 @@ public class AccountsServiceImpl implements AccountsService {
     public boolean updateAccount(CustomerDTO customerDTO) {
         boolean isUpdated = false;
         AccountsDTO accountsDto = customerDTO.getAccounts();
-        if(accountsDto != null) {
+        if (accountsDto != null) {
             Accounts accounts = accountsRepository.findById(accountsDto.getAccountNumber()).orElseThrow(
                     () -> new ResourceNotFoundException("Account", "AccountNumber", accountsDto.getAccountNumber().toString())
             );
@@ -69,11 +66,11 @@ public class AccountsServiceImpl implements AccountsService {
             Customer customer = customerRepository.findById(customerId).orElseThrow(
                     () -> new ResourceNotFoundException("Customer", "CustomerID", customerId.toString())
             );
-            CustomerMapper.mapToCustomer(customerDTO,customer);
+            CustomerMapper.mapToCustomer(customerDTO, customer);
             customerRepository.save(customer);
             isUpdated = true;
         }
-        return  isUpdated;
+        return isUpdated;
     }
 
     @Override
@@ -94,8 +91,6 @@ public class AccountsServiceImpl implements AccountsService {
         newAccount.setAccountNumber(randomAccNumber);
         newAccount.setAccountType(AccountsConstants.SAVINGS);
         newAccount.setBranchAddress(AccountsConstants.ADDRESS);
-        newAccount.setCreatedAt(LocalDateTime.now());
-        newAccount.setCreatedBy("-");
         return newAccount;
     }
 
