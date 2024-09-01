@@ -52,6 +52,7 @@ public class AccountsController {
     @Operation(summary = "REST API: Update Account details")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "HTTP Status OK"),
+            @ApiResponse(responseCode = "417", description = "Exception Failed"),
             @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error",
             content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class)))
     })
@@ -72,6 +73,7 @@ public class AccountsController {
     @Operation(summary = "REST API: Delete Account")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "HTTP Status OK"),
+            @ApiResponse(responseCode = "417", description = "Exception Failed"),
             @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error",
                     content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class)))
     })
